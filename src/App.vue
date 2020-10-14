@@ -10,6 +10,8 @@
     <button @click="overAction">点餐完毕</button>
   </div>
   <div>{{overText}}</div>
+  <div @click="getNowTime">显示时间</div>
+  <div>{{nowTime}}</div>
 </template>
 
 <script lang="ts">
@@ -44,11 +46,22 @@ import {
  *    -- oldValue 更新前变量的值
  *    -- target 目前页面中的响应变量和函数
  */
+import { nowTime, getNowTime } from '@/hooks/useNowTime'
 export default ({
   name: 'App',
   components: {
   },
   setup() { // setup 中定义 变量和逻辑
+    // const nowTime = ref("00:00:00");
+    // const getNowTime = () => {
+    //   const now = new Date();
+    //   const hour = now.getHours() < 10 ? "0" + now.getHours() : now.getHours();
+    //   const minu = now.getMinutes() < 10 ? "0" + now.getMinutes() : now.getMinutes();
+    //   const sec = now.getSeconds() <  10 ? "0" + now.getSeconds() : now.getSeconds();
+    //   nowTime.value = hour + ":" + minu + ":" + sec;
+    //   setTimeout(getNowTime, 1000) // 每隔1 秒执行一次这个方法
+    // }
+
     interface DataProps { // 定义接口作为类型注解
       list: string[];
       selected: string;
@@ -76,7 +89,9 @@ export default ({
    return { // 将需要在 template 中使用的 变量 和方法暴露出去
      ...refData,
      overText,
-     overAction
+     overAction,
+     getNowTime,
+     nowTime
    };
   },
 });
