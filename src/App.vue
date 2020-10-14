@@ -17,6 +17,8 @@ import {
   onBeforeMount,
   onBeforeUpdate,
   onUpdated,
+  onRenderTracked,
+  onRenderTriggered
 } from 'vue';  // 使用reactive 优化代码； 使用 toRefs() 优化渲染的时候的 data
 // vue3 的生命周期
 /**
@@ -32,24 +34,43 @@ import {
  * 10. onErrorCaptured(): 当不会一个来自子孙组件的异常时激活钩子函数
  * 注： <keep-alive> 组件会将数据保存在内存中，比如我们不想每次看到一个页面都重新加载数据 就可以私用<keep-alive>组件解决
  */
+
+// vue3新的钩子函数
+/**
+ * 1. onRenderTracked 状态跟踪，他会跟踪页面上所有的响应式变量和方法的状态
+ * 2. onRenderTriggered 状态触发， 他不会跟踪每一个值，而是给你变化的信息，并且新值和旧值都会展示出来
+ *    -- key 哪个变量发生了变化
+ *    -- newValue 更新后变量的值
+ *    -- oldValue 更新前变量的值
+ *    -- target 目前页面中的响应变量和函数
+ */
 export default ({
   name: 'App',
   components: {
   },
   setup() { // setup 中定义 变量和逻辑
-  onUpdated(() => {
-    console.log("5--组件更新完成之后")
-  })
-  onBeforeUpdate(() => {
-    console.log("4--组件更新之前---onBeforeUpdate")
-  })
-  onMounted(() => {
-    console.log("3--组件挂载到页面之后执行---onMounted")
-  })
-  onBeforeMount( () => {
-    console.log("2--组件挂载到页面之前执行--onBeforeMount")
-  })
-  console.log("1--开始创建组件---setup()")
+    onRenderTriggered((event) => {
+      console.log("状态触发组件--->")
+      console.log(event)
+    })
+
+    onRenderTracked((event) => {
+      console.log("状态跟踪组件----->")
+      console.log(event)
+    })
+    onUpdated(() => {
+      console.log("5--组件更新完成之后")
+    })
+    onBeforeUpdate(() => {
+      console.log("4--组件更新之前---onBeforeUpdate")
+    })
+    onMounted(() => {
+      console.log("3--组件挂载到页面之后执行---onMounted")
+    })
+    onBeforeMount( () => {
+      console.log("2--组件挂载到页面之前执行--onBeforeMount")
+    })
+    console.log("1--开始创建组件---setup()")
     interface DataProps { // 定义接口作为类型注解
       list: string[];
       selected: string;
