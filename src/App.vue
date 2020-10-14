@@ -9,13 +9,47 @@
 </template>
 
 <script lang="ts">
-import { reactive, toRefs } from 'vue';  // 使用reactive 优化代码； 使用 toRefs() 优化渲染的时候的 data
-
+// Vue3 的生命周期在调用瘴气氨 需要线引入
+import {
+  reactive,
+  toRefs,
+  onMounted,
+  onBeforeMount,
+  onBeforeUpdate,
+  onUpdated,
+} from 'vue';  // 使用reactive 优化代码； 使用 toRefs() 优化渲染的时候的 data
+// vue3 的生命周期
+/**
+ * 1. setup() 开始创建组件之前，在 beforeCreate 和 created 之前执行。创建的是 data 和 methods
+ * 2. onBeforeMount(): 组件挂在到节点上之前执行的函数
+ * 3. onMounted(): 组件挂载完成后执行的函数
+ * 4. onBeforeUpdate(): 组件更新完成之前的执行函数
+ * 5. onUpdated(): 组件更新完成之后执行的函数
+ * 6. onBeforeUnmout(): 组件卸载之前执行的函数
+ * 7. onUnmounted(): 组件卸载之后执行的函数
+ * 8. onActived(): 被包含在 ·<keep-alive>· 中的组件，会多出两个生命周期函数。被激活时执行。
+ * 9. onDeactived(): 比如 从A 组件，切换到 B组件， A 组件消失的时候执行
+ * 10. onErrorCaptured(): 当不会一个来自子孙组件的异常时激活钩子函数
+ * 注： <keep-alive> 组件会将数据保存在内存中，比如我们不想每次看到一个页面都重新加载数据 就可以私用<keep-alive>组件解决
+ */
 export default ({
   name: 'App',
   components: {
   },
   setup() { // setup 中定义 变量和逻辑
+  onUpdated(() => {
+    console.log("5--组件更新完成之后")
+  })
+  onBeforeUpdate(() => {
+    console.log("4--组件更新之前---onBeforeUpdate")
+  })
+  onMounted(() => {
+    console.log("3--组件挂载到页面之后执行---onMounted")
+  })
+  onBeforeMount( () => {
+    console.log("2--组件挂载到页面之前执行--onBeforeMount")
+  })
+  console.log("1--开始创建组件---setup()")
     interface DataProps { // 定义接口作为类型注解
       list: string[];
       selected: string;
