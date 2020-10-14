@@ -6,6 +6,10 @@
     </div>
   </div>
   <div class="">{{a}}被选中的人是： {{selected}}</div>
+  <div>
+    <button @click="overAction">点餐完毕</button>
+  </div>
+  <div>{{overText}}</div>
 </template>
 
 <script lang="ts">
@@ -13,12 +17,8 @@
 import {
   reactive,
   toRefs,
-  onMounted,
-  onBeforeMount,
-  onBeforeUpdate,
-  onUpdated,
-  onRenderTracked,
-  onRenderTriggered
+  watch,
+  ref,
 } from 'vue';  // 使用reactive 优化代码； 使用 toRefs() 优化渲染的时候的 data
 // vue3 的生命周期
 /**
@@ -49,28 +49,6 @@ export default ({
   components: {
   },
   setup() { // setup 中定义 变量和逻辑
-    onRenderTriggered((event) => {
-      console.log("状态触发组件--->")
-      console.log(event)
-    })
-
-    onRenderTracked((event) => {
-      console.log("状态跟踪组件----->")
-      console.log(event)
-    })
-    onUpdated(() => {
-      console.log("5--组件更新完成之后")
-    })
-    onBeforeUpdate(() => {
-      console.log("4--组件更新之前---onBeforeUpdate")
-    })
-    onMounted(() => {
-      console.log("3--组件挂载到页面之后执行---onMounted")
-    })
-    onBeforeMount( () => {
-      console.log("2--组件挂载到页面之前执行--onBeforeMount")
-    })
-    console.log("1--开始创建组件---setup()")
     interface DataProps { // 定义接口作为类型注解
       list: string[];
       selected: string;
@@ -83,12 +61,22 @@ export default ({
         data.selected = data.list[index]
       }
     })
+    const overText = ref("红浪漫");
+    const overAction = () => {
+      overText.value = overText.value + "点餐完成 | "
+    }
 
     const refData = toRefs(data);
-    
+    watch([overText, () => data.selected], (newValue, oldValue) => { // 我想说的这并不是Bug，而是为了保持和Vue2的一致性，因为在Vue2中也时这种结果，解决方案是要么是ref或者这种get/set方法的形式。要么你你开启设置watchOptions的deep为true，也就是深度监听模式。
+    console.log(`new--->${newValue}`);
+    console.log(`old--->${oldValue}`);
+    document.title = newValue[0];
+  });
 
    return { // 将需要在 template 中使用的 变量 和方法暴露出去
-     ...refData
+     ...refData,
+     overText,
+     overAction
    };
   },
 });
